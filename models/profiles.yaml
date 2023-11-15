@@ -29,26 +29,42 @@ models:
           value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
       vars:
         - entity_var:
-            name: intention
+            name: product_interest
             from: inputs/rsIdentifies
-            select: array_agg(distinct intention)
-            description: What is the user looking to do on OpenDoor?
+            select: array_agg(distinct product_interest)
+            description: Which content has the user viewed?
         - entity_var:
-            name: sell_urgency
+            name: cardmatch_profile
             from: inputs/rsIdentifies
-            select: first_value(sell_urgency ignore nulls)
+            select: first_value(cardmatch_profile ignore nulls)
             window:
               order_by:
                 - timestamp desc
             description: When is the user looking to sell their home?
         - entity_var:
-            name: buy_urgency
+            name: real_estate_content_viewed
             from: inputs/rsIdentifies
-            select: first_value(buy_urgency ignore nulls)
+            select: first_value(real_estate_content_viewed ignore nulls)
             window:
               order_by:
                 - timestamp desc
-            description: When is the user looking to buy a home?
+            description: Number of unique contents viewed about real estate
+        - entity_var:
+            name: credit_card_content_viewed
+            from: inputs/rsIdentifies
+            select: first_value(credit_card_content_viewed ignore nulls)
+            window:
+              order_by:
+                - timestamp desc
+            description: Number of unique contents viewed about credit cards
+        - entity_var:
+            name: personal_loan_content_viewed
+            from: inputs/rsIdentifies
+            select: first_value(personal_loan_content_viewed ignore nulls)
+            window:
+              order_by:
+                - timestamp desc
+            description: Number of unique contents viewed about personal loans
         - entity_var:
             name: total_sessions_to_date
             from: models/rsTracksUnionPages
@@ -282,9 +298,11 @@ models:
             from: models/rsItemsPurchasedEver
             description: The list of unique products bought by the user.
       features:
-        - intention
-        - sell_urgency
-        - buy_urgency
+        - product_interest
+        - cardmatch_profile
+        - credit_card_content_viewed
+        - real_estate_content_viewed
+        - personal_loan_content_viewed
         - total_sessions_to_date
         - days_since_account_creation
         - days_since_last_seen

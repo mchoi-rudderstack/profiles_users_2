@@ -21,12 +21,10 @@ entities:
       - anonymous_id
       - email
       - cart_token
-      - property_id
 id_types:
   - name: user_id
   - name: cart_token
   - name: session_id
-  - name: property_id
   - name: anonymous_id
     filters:
       - type: exclude

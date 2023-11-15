@@ -1,0 +1,121 @@
+inputs:
+  - name: rsIdentifies
+    app_defaults:
+      table: DEMO_DB.ECOMM_DEMO.IDENTIFIES
+    occurred_at_col: timestamp
+    ids:
+      - select: "user_id"
+        type: user_id
+        entity: user
+        to_default_stitcher: true
+      - select: "anonymous_id"
+        type: anonymous_id
+        entity: user
+        to_default_stitcher: true
+      - select: "lower(email)"
+        type: email
+        entity: user
+        to_default_stitcher: true
+      - select: "property_id"
+        type: property_id
+        entity: user
+        to_default_stitcher: true
+    source_metadata:
+      role: shopify
+      category: webhook
+  - name: rsTracks
+    app_defaults:
+      table: DEMO_DB.ECOMM_DEMO.TRACKS
+    occurred_at_col: timestamp
+    ids:
+      - select: "user_id"
+        type: user_id
+        entity: user
+        to_default_stitcher: true
+      - select: "anonymous_id"
+        type: anonymous_id
+        entity: user
+        to_default_stitcher: true
+    source_metadata:
+      role: shopify
+      category: webhook
+  - name: rsPages
+    app_defaults:
+      table: DEMO_DB.ECOMM_DEMO.PAGES
+    occurred_at_col: timestamp
+    ids:
+      - select: "user_id"
+        type: user_id
+        entity: user
+        to_default_stitcher: true
+      - select: "anonymous_id"
+        type: anonymous_id
+        entity: user
+        to_default_stitcher: true
+      - select: "concat(coalesce(anonymous_id, 'null'), coalesce(to_char(context_session_id), 'null'))"
+        type: session_id
+        entity: user
+        to_default_stitcher: true
+    source_metadata:
+      role: shopify
+      category: webhook
+  - name: rsOrderCreated
+    app_defaults:
+      table: DEMO_DB.ECOMM_DEMO.ORDER_CREATED
+    occurred_at_col: timestamp
+    ids:
+      - select: "user_id"
+        type: user_id
+        entity: user
+        to_default_stitcher: true
+      - select: "anonymous_id"
+        type: anonymous_id
+        entity: user
+        to_default_stitcher: true
+    source_metadata:
+      role: shopify
+      category: webhook
+  - name: rsOrderCancelled
+    app_defaults:
+      table: DEMO_DB.ECOMM_DEMO.ORDER_CANCELLED
+    occurred_at_col: timestamp
+    ids:
+      - select: "user_id"
+        type: user_id
+        entity: user
+        to_default_stitcher: true
+      - select: "anonymous_id"
+        type: anonymous_id
+        entity: user
+        to_default_stitcher: true
+    source_metadata:
+      role: shopify
+      category: webhook
+  - name: rsCartUpdate
+    app_defaults:
+      table: DEMO_DB.ECOMM_DEMO.CART_UPDATE
+    occurred_at_col: timestamp
+    ids:
+      - select: "anonymous_id"
+        type: anonymous_id
+        entity: user
+        to_default_stitcher: true
+    source_metadata:
+      role: shopify
+      category: webhook
+  - name: rsOrderUpdated
+    app_defaults:
+      table: DEMO_DB.ECOMM_DEMO.ORDER_UPDATED
+    occurred_at_col: timestamp
+    ids:
+      - select: "user_id"
+        type: user_id
+        entity: user
+        to_default_stitcher: true
+      - select: "anonymous_id"
+        type: anonymous_id
+        entity: user
+        to_default_stitcher: true
+    source_metadata:
+      role: shopify
+      category: webhook

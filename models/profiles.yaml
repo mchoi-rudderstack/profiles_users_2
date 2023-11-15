@@ -31,7 +31,7 @@ models:
         - entity_var:
             name: product_interest
             from: inputs/rsIdentifies
-            select: array_agg(distinct product_interest)
+            select: array_agg(distinct product_used)
             description: Which content has the user viewed?
         - entity_var:
             name: cardmatch_profile

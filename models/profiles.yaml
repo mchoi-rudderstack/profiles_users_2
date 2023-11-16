@@ -145,4 +145,7 @@ models:
         - last_name
         - user_email
         - is_churned_7_days
+        - max_timestamp_tracks
+        - max_timestamp_pages
+        - max_timestamp_bw_tracks_pages
 

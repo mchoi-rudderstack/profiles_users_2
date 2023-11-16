@@ -117,6 +117,21 @@ models:
                 - timestamp desc
             where: email is not null and email!=''
             description: Email associated to the order
+        - entity_var:
+            name: max_timestamp_tracks
+            select: max(timestamp)
+            from: inputs/rsTracks
+        - entity_var:
+            name: max_timestamp_pages
+            select: max(timestamp)
+            from: inputs/rsPages
+            description: The total value of products that are part of the last transaction.
+        - entity_var:
+            name: max_timestamp_bw_tracks_pages
+            select: CASE WHEN max_timestamp_tracks>=max_timestamp_pages THEN max_timestamp_tracks ELSE max_timestamp_pages END
+            dependencies:
+              - max_timestamp_tracks
+              - max_timestamp_pages
       features:
         - product_interest
         - cardmatch_profile

@@ -29,50 +29,29 @@ models:
           value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
       vars:
         - entity_var:
-            name: product_interest
+            name: plan_type
             from: inputs/rsIdentifies
-            select: array_agg(distinct product_used)
-            description: Which content has the user viewed?
-        - entity_var:
-            name: FAVORITE_GENRE
-            from: inputs/rsIdentifies
-            select: first_value(FAVORITE_GENRE ignore nulls)
+            select: first_value(plan_type ignore nulls)
             window:
               order_by:
                 - timestamp desc
-            description: What is the favorite genre of the user
+            description: The plan the user is currently on
         - entity_var:
-            name: cardmatch_profile
+            name: videos_uploaded
             from: inputs/rsIdentifies
-            select: first_value(cardmatch_profile ignore nulls)
+            select: first_value(videos_uploaded ignore nulls)
             window:
               order_by:
                 - timestamp desc
-            description: When is the user looking to sell their home?
+            description: Number of unique videos uploaded
         - entity_var:
-            name: real_estate_content_viewed
+            name: folders_created
             from: inputs/rsIdentifies
-            select: first_value(real_estate_content_viewed ignore nulls)
+            select: first_value(folders_created ignore nulls)
             window:
               order_by:
                 - timestamp desc
-            description: Number of unique contents viewed about real estate
-        - entity_var:
-            name: credit_card_content_viewed
-            from: inputs/rsIdentifies
-            select: first_value(credit_card_content_viewed ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
-            description: Number of unique contents viewed about credit cards
-        - entity_var:
-            name: personal_loan_content_viewed
-            from: inputs/rsIdentifies
-            select: first_value(personal_loan_content_viewed ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
-            description: Number of unique contents viewed about personal loans
+            description: Number of unique folders created
         - entity_var:
             name: total_sessions_to_date
             from: models/rsTracksUnionPages
@@ -141,12 +120,9 @@ models:
               - max_timestamp_tracks
               - max_timestamp_pages
       features:
-        - product_interest
-        - FAVORITE_GENRE
-        - cardmatch_profile
-        - credit_card_content_viewed
-        - real_estate_content_viewed
-        - personal_loan_content_viewed
+        - plan_type
+        - videos_uploaded
+        - folders_created
         - total_sessions_to_date
         - days_since_account_creation
         - days_since_last_seen

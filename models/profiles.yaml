@@ -33,10 +33,10 @@ models:
             from: inputs/rsIdentifies
             select: array_agg(distinct product_used)
             description: Which content has the user viewed?
-       - entity_var:
-            name: favorite_genre
+        - entity_var:
+            name: FAVORITE_GENRE
             from: inputs/rsIdentifies
-            select: first_value(favorite_genre ignore nulls)
+            select: first_value(FAVORITE_GENRE ignore nulls)
             window:
               order_by:
                 - timestamp desc
@@ -142,7 +142,7 @@ models:
               - max_timestamp_pages
       features:
         - product_interest
-        - favorite_genre
+        - FAVORITE_GENRE
         - cardmatch_profile
         - credit_card_content_viewed
         - real_estate_content_viewed

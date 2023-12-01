@@ -42,11 +42,17 @@ models:
             name: total_earned
             from: inputs/rsIdentifies
             select: first_value(total_earned ignore nulls)
+            window:
+              order_by:
+                - timestamp desc
             description: Total amount of money earned by the tester
         - entity_var:
             name: tests_created
             from: inputs/rsIdentifies
             select: first_value(tests_created ignore nulls)
+            window:
+              order_by:
+                - timestamp desc
             description: Total number of tests posted by the admin
         - entity_var:
             name: total_sessions_to_date

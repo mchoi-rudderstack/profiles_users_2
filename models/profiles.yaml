@@ -49,7 +49,7 @@ models:
             select: first_value(tests_created ignore nulls)
             window:
               order_by:
-                - timestamp desc
+                - tests_created desc
             description: Total number of tests posted by the admin
         - entity_var:
             name: total_sessions_to_date

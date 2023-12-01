@@ -41,10 +41,7 @@ models:
         - entity_var:
             name: total_earned
             from: inputs/rsIdentifies
-            select: first_value(total_earned ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
+            select: sum(total_earned::real)
             description: Total amount of money earned by the tester
         - entity_var:
             name: tests_created

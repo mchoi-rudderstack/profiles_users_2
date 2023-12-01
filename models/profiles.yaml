@@ -29,29 +29,25 @@ models:
           value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
       vars:
         - entity_var:
-            name: plan_type
+            name: user_type
             from: inputs/rsIdentifies
-            select: first_value(plan_type ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
-            description: The plan the user is currently on
+            select: array_agg(distinct user_type)
+            description: The role of the user
         - entity_var:
-            name: videos_uploaded
+            name: completed_tests
             from: inputs/rsIdentifies
-            select: first_value(videos_uploaded ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
-            description: Number of unique videos uploaded
+            select: sum(completed_tests::real)
+            description: Number of tests completed by the tester
         - entity_var:
-            name: folders_created
+            name: total_earned
             from: inputs/rsIdentifies
-            select: first_value(folders_created ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
-            description: Number of unique folders created
+            select: first_value(total_earned ignore nulls)
+            description: Total amount of money earned by the tester
+        - entity_var:
+            name: tests_created
+            from: inputs/rsIdentifies
+            select: first_value(tests_created ignore nulls)
+            description: Total number of tests posted by the admin
         - entity_var:
             name: total_sessions_to_date
             from: models/rsTracksUnionPages
@@ -120,9 +116,10 @@ models:
               - max_timestamp_tracks
               - max_timestamp_pages
       features:
-        - plan_type
-        - videos_uploaded
-        - folders_created
+        - user_type
+        - completed_tests
+        - total_earned
+        - tests_created
         - total_sessions_to_date
         - days_since_account_creation
         - days_since_last_seen

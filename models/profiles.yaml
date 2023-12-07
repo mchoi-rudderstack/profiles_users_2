@@ -29,28 +29,31 @@ models:
           value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
       vars:
         - entity_var:
-            name: user_type
+            name: areas_of_care
             from: inputs/rsIdentifies
-            select: array_agg(distinct user_type)
-            description: The role of the user
+            select: array_agg(distinct areas_of_care)
+            description: The areas of care associated to the patient
         - entity_var:
-            name: completed_tests
+            name: insurance_provider
             from: inputs/rsIdentifies
-            select: sum(completed_tests::real)
-            description: Number of tests completed by the tester
-        - entity_var:
-            name: total_earned
-            from: inputs/rsIdentifies
-            select: sum(total_earned::real)
-            description: Total amount of money earned by the tester
-        - entity_var:
-            name: tests_created
-            from: inputs/rsIdentifies
-            select: first_value(tests_created ignore nulls)
+            select: first_value(insurance_provider ignore nulls)
             window:
               order_by:
                 - tests_created desc
-            description: Total number of tests posted by the admin
+            description: The insurance provider for the patient
+        - entity_var:
+            name: amount_due
+            from: inputs/rsIdentifies
+            select: sum(amount_due::real)
+            description: Total amount of due based on services
+        - entity_var:
+            name: number_of_appts
+            from: inputs/rsIdentifies
+            select: first_value(number_of_appts ignore nulls)
+            window:
+              order_by:
+                - tests_created desc
+            description: Total number of appts scheduled by the patient
         - entity_var:
             name: total_sessions_to_date
             from: models/rsTracksUnionPages
@@ -119,10 +122,10 @@ models:
               - max_timestamp_tracks
               - max_timestamp_pages
       features:
-        - user_type
-        - completed_tests
-        - total_earned
-        - tests_created
+        - areas_of_care
+        - insurance_provider
+        - amount_due
+        - number_of_appts
         - total_sessions_to_date
         - days_since_account_creation
         - days_since_last_seen

@@ -29,31 +29,31 @@ models:
           value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
       vars:
         - entity_var:
-            name: areas_of_care
+            name: plan_type
             from: inputs/rsIdentifies
-            select: array_agg(distinct areas_of_care)
-            description: The areas of care associated to the patient
-        - entity_var:
-            name: insurance_provider
-            from: inputs/rsIdentifies
-            select: first_value(insurance_provider ignore nulls)
+            select: first_value(plan_type ignore nulls)
             window:
               order_by:
-                - tests_created desc
-            description: The insurance provider for the patient
+                - timestamp desc
+            description: The plan type that the user is subscribed to
         - entity_var:
-            name: amount_due
+            name: ltv
             from: inputs/rsIdentifies
-            select: sum(amount_due::real)
-            description: Total amount of due based on services
-        - entity_var:
-            name: number_of_appts
-            from: inputs/rsIdentifies
-            select: first_value(number_of_appts ignore nulls)
+            select: first_value(ltv ignore nulls)
             window:
               order_by:
-                - tests_created desc
-            description: Total number of appts scheduled by the patient
+                - timestamp desc
+            description: The LTV of the user
+        - entity_var:
+            name: completed_washes
+            from: inputs/rsIdentifies
+            select: sum(completed_washes::real)
+            description: Total amount of washes completed
+        - entity_var:
+            name: open_support_tickets
+            from: inputs/rsIdentifies
+            select: sum(open_support_tickets::real)
+            description: Total support tickets currently open
         - entity_var:
             name: total_sessions_to_date
             from: models/rsTracksUnionPages
@@ -122,10 +122,10 @@ models:
               - max_timestamp_tracks
               - max_timestamp_pages
       features:
-        - areas_of_care
-        - insurance_provider
-        - amount_due
-        - number_of_appts
+        - plan_type
+        - ltv
+        - completed_washes
+        - open_support_tickets
         - total_sessions_to_date
         - days_since_account_creation
         - days_since_last_seen

@@ -29,13 +29,13 @@ models:
           value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
       vars:
         - entity_var:
-            name: plan_type
+            name: user_role
             from: inputs/rsIdentifies
-            select: first_value(plan_type ignore nulls)
+            select: first_value(user_role ignore nulls)
             window:
               order_by:
                 - timestamp desc
-            description: The plan type that the user is subscribed to
+            description: The type of user
         - entity_var:
             name: ltv
             from: inputs/rsIdentifies
@@ -45,10 +45,10 @@ models:
                 - timestamp desc
             description: The LTV of the user
         - entity_var:
-            name: completed_washes
+            name: submitted_orders
             from: inputs/rsIdentifies
-            select: sum(completed_washes::real)
-            description: Total amount of washes completed
+            select: sum(completed_orders::real)
+            description: Total amount of orders submitted
         - entity_var:
             name: open_support_tickets
             from: inputs/rsIdentifies

@@ -122,9 +122,9 @@ models:
               - max_timestamp_tracks
               - max_timestamp_pages
       features:
-        - plan_type
+        - user_role
         - ltv
-        - completed_washes
+        - submitted_orders
         - open_support_tickets
         - total_sessions_to_date
         - days_since_account_creation

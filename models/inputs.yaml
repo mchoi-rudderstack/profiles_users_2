@@ -2,20 +2,20 @@ inputs:
   - name: rsIdentifies
     app_defaults:
       table: DEMO_DB.ECOMM_DEMO.IDENTIFIES
-    occurred_at_col: timestamp
-    ids:
-      - select: "user_id"
-        type: user_id
-        entity: user
-        to_default_stitcher: true
-      - select: "anonymous_id"
-        type: anonymous_id
-        entity: user
-        to_default_stitcher: true
-      - select: "lower(email)"
-        type: email
-        entity: user
-        to_default_stitcher: true
+      occurred_at_col: timestamp
+      ids:
+        - select: "user_id"
+          type: user_id
+          entity: user
+          to_default_stitcher: true
+        - select: "anonymous_id"
+          type: anonymous_id
+          entity: user
+          to_default_stitcher: true
+        - select: "lower(email)"
+          type: email
+          entity: user
+          to_default_stitcher: true
     source_metadata:
       role: shopify
       category: webhook

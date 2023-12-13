@@ -31,7 +31,7 @@ models:
         - entity_var:
             name: total_amount_invested
             from: inputs/rsIdentifies
-            select: sum(total_amount_invested::real)
+            select: sum(amount_invested::real)
             description: Total amount invested through Kraken
         - entity_var:
             name: total_balance_amount

@@ -95,7 +95,7 @@ models:
             where: last_name is not null and last_name!=''
             description: Last name of the customer
         - entity_var:
-            name: user_email
+            name: recent_user_email
             from: inputs/rsIdentifies
             select: first_value(email)
             window:

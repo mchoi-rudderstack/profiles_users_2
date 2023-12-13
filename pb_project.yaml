@@ -39,3 +39,5 @@ id_types:
         regex: ".+@.+"
       - type: exclude
         value: "test@company.com"
+      - type: exclude
+        value: ""

@@ -29,26 +29,23 @@ models:
           value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
       vars:
         - entity_var:
-            name: user_role
+            name: total_amount_invested
             from: inputs/rsIdentifies
-            select: first_value(user_role ignore nulls)
+            select: sum(total_amount_invested::real)
+            description: Total amount invested through Kraken
+        - entity_var:
+            name: total_balance_amount
+            from: inputs/rsIdentifies
+            select: sum(balance_amount::real)
+            description: Total available balance
+        - entity_var:
+            name: largest_crypto_investment
+            from: inputs/rsIdentifies
+            select: first_value(largest_crypto_investment ignore nulls)
             window:
               order_by:
                 - timestamp desc
-            description: The type of user
-        - entity_var:
-            name: ltv
-            from: inputs/rsIdentifies
-            select: first_value(ltv ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
-            description: The LTV of the user
-        - entity_var:
-            name: submitted_orders
-            from: inputs/rsIdentifies
-            select: sum(completed_orders::real)
-            description: Total amount of orders submitted
+            description: What is the preferred cyrpto currency for the user
         - entity_var:
             name: open_support_tickets
             from: inputs/rsIdentifies
@@ -121,19 +118,4 @@ models:
             dependencies:
               - max_timestamp_tracks
               - max_timestamp_pages
-      features:
-        - user_role
-        - ltv
-        - submitted_orders
-        - open_support_tickets
-        - total_sessions_to_date
-        - days_since_account_creation
-        - days_since_last_seen
-        - first_name
-        - last_name
-        - user_email
-        - is_churned_7_days
-        - max_timestamp_tracks
-        - max_timestamp_pages
-        - max_timestamp_bw_tracks_pages
-
+              

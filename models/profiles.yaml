@@ -118,4 +118,20 @@ models:
             dependencies:
               - max_timestamp_tracks
               - max_timestamp_pages
+              - user_role
+      features:
+        - total_amount_invested
+        - total_balance_amount
+        - largest_crypto_investment
+        - open_support_tickets
+        - total_sessions_to_date
+        - days_since_account_creation
+        - days_since_last_seen
+        - first_name
+        - last_name
+        - recent_user_email
+        - is_churned_7_days
+        - max_timestamp_tracks
+        - max_timestamp_pages
+        - max_timestamp_bw_tracks_pages
               

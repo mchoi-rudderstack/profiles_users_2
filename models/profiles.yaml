@@ -37,6 +37,9 @@ models:
             name: plan_type
             from: inputs/rsIdentifies
             select: first_value(plan_type ignore nulls)
+            window:
+              order_by:
+                - timestamp desc
             description: The plan type purchased by the user
         - entity_var:
             name: ltv

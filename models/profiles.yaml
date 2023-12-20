@@ -29,23 +29,20 @@ models:
           value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
       vars:
         - entity_var:
-            name: total_amount_invested
+            name: product_used
             from: inputs/rsIdentifies
-            select: sum(invested_amount::real)
-            description: Total amount invested through Kraken
+            select: array_agg(distinct product_used)
+            description: Products used by the user
         - entity_var:
-            name: total_balance_amount
+            name: plan_type
             from: inputs/rsIdentifies
-            select: sum(balance_amount::real)
-            description: Total available balance
+            select: first_value(plan_type ignore nulls)
+            description: The plan type purchased by the user
         - entity_var:
-            name: largest_crypto_investment
+            name: ltv
             from: inputs/rsIdentifies
-            select: first_value(largest_crypto_investment ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
-            description: What is the preferred cyrpto currency for the user
+            select: sum(ltv::real)
+            description: User LTV
         - entity_var:
             name: open_support_tickets
             from: inputs/rsIdentifies
@@ -120,9 +117,9 @@ models:
               - max_timestamp_pages
               - user_role
       features:
-        - total_amount_invested
-        - total_balance_amount
-        - largest_crypto_investment
+        - product_used
+        - plan_type
+        - ltv
         - open_support_tickets
         - total_sessions_to_date
         - days_since_account_creation

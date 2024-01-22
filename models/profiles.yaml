@@ -29,18 +29,23 @@ models:
           value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
       vars:
         - entity_var:
-            name: product_used
+            name: user_intention
             from: inputs/rsIdentifies
-            select: array_agg(distinct product_used)
-            description: Products used by the user
+            select: array_agg(distinct user_intention)
+            description: What is the user looking to do with Habi
         - entity_var:
-            name: plan_type
+            name: habimetro_completion
             from: inputs/rsIdentifies
-            select: first_value(plan_type ignore nulls)
+            select: first_value(habimetro_completion ignore nulls)
             window:
               order_by:
                 - timestamp desc
-            description: The plan type purchased by the user
+            description: Has the user completed the habimetro flow
+        - entity_var:
+            name: city
+            from: inputs/rsIdentifies
+            select: array_agg(distinct city)
+            description: What city is the user looking to buy in
         - entity_var:
             name: ltv
             from: inputs/rsIdentifies
@@ -120,8 +125,9 @@ models:
               - max_timestamp_pages
               - user_role
       features:
-        - product_used
-        - plan_type
+        - user_intention
+        - habimetro_completion
+        - city
         - ltv
         - open_support_tickets
         - total_sessions_to_date

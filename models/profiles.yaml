@@ -42,7 +42,7 @@ models:
                 - timestamp desc
             description: Has the user completed the habimetro flow
         - entity_var:
-            name: city
+            name: buy_city
             from: inputs/rsIdentifies
             select: array_agg(distinct city)
             description: What city is the user looking to buy in
@@ -127,7 +127,7 @@ models:
       features:
         - user_intention
         - habimetro_completion
-        - city
+        - buy_city
         - ltv
         - open_support_tickets
         - total_sessions_to_date

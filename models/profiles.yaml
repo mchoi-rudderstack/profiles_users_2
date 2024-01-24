@@ -1,5 +1,5 @@
 models:
-  - name: ecomm_loyal_customers_stitcher
+  - name: users_stitcher
     model_type: id_stitcher
     model_spec:
       validity_time: 24h # 1 day
@@ -12,7 +12,7 @@ models:
         - from: inputs/rsOrderCancelled
         - from: inputs/rsCartUpdate
   # Remove the section below, if you don't want to generate a feature table
-  - name: ecomm_loyal_customers
+  - name: users
     model_type: feature_table_model
     model_spec:
       validity_time: 24h # 1 day

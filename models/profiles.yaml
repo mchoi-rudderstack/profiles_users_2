@@ -39,7 +39,7 @@ models:
         - entity_var:
             name: viewed_supersonic_content
             from: inputs/rsIdentifies
-            select: sum(content_viewed::real)
+            select: sum(viewed_supersonic_content::real)
             description: Number of supersonic content viewed
         - entity_var:
             name: remote_user_score

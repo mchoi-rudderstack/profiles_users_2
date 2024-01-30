@@ -31,34 +31,32 @@ models:
         - entity_var:
             name: product_used
             from: inputs/rsIdentifies
-            select: array_agg(distinct product_used)
-            description: Services that the user is using
-        - entity_var:
-            name: content_viewed
-            from: inputs/rsIdentifies
-            select: first_value(content_viewed ignore nulls)
+            select: first_value(product_used ignore nulls)
             window:
               order_by:
                 - timestamp desc
-            description: Number of content viewed
+            description: The plan the user is currently on
         - entity_var:
-            name: num_of_credit_cards
+            name: viewed_supersonic_content
             from: inputs/rsIdentifies
-            select: first_value(num_of_credit_cards ignore nulls)
+            select: sum(content_viewed::real)
+            description: Number of supersonic content viewed
+        - entity_var:
+            name: remote_user_score
+            from: inputs/rsIdentifies
+            select: first_value(remote_user_score ignore nulls)
             window:
               order_by:
                 - timestamp desc
-            description: Number of credit cards opened by the user
+            description: Confidence score if the user is remote user
         - entity_var:
-            name: personal_loan_amount
+            name: mwu_user
             from: inputs/rsIdentifies
-            select: sum(personal_loan_amount::real)
-            description: Total personal loan amount
-        - entity_var:
-            name: home_loan_amount
-            from: inputs/rsIdentifies
-            select: sum(home_loan_amount::real)
-            description: Total home loan amount
+            select: first_value(mwu_user ignore nulls)
+            window:
+              order_by:
+                - timestamp desc
+            description: Is the user active with MWU
         - entity_var:
             name: total_sessions_to_date
             from: models/rsTracksUnionPages
@@ -122,10 +120,9 @@ models:
               - user_role
       features:
         - product_used
-        - content_viewed
-        - num_of_credit_cards
-        - personal_loan_amount
-        - home_loan_amount
+        - viewed_supersonic_content
+        - remote_user_score
+        - mwu_user
         - first_name
         - last_name
         - recent_user_email

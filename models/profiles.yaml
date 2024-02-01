@@ -31,10 +31,7 @@ models:
         - entity_var:
             name: interested_products
             from: inputs/rsIdentifies
-            select: first_value(interested_products ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
+            select: array_agg(distinct interested_products)
             description: All products that the user have expressed interest in
         - entity_var:
             name: cd_content_viewed
@@ -44,12 +41,12 @@ models:
         - entity_var:
             name: checking_content_viewed
             from: inputs/rsIdentifies
-            select: sum(cd_content_viewed::real)
+            select: sum(checking_content_viewed::real)
             description: Number of Checking content viewed
         - entity_var:
             name: savings_content_viewed
             from: inputs/rsIdentifies
-            select: sum(cd_content_viewed::real)
+            select: sum(savings_content_viewed::real)
             description: Number of Savings and MMA content viewed
         - entity_var:
             name: total_sessions_to_date

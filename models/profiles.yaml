@@ -29,34 +29,28 @@ models:
           value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
       vars:
         - entity_var:
-            name: product_used
+            name: interested_products
             from: inputs/rsIdentifies
-            select: first_value(product_used ignore nulls)
+            select: first_value(interested_products ignore nulls)
             window:
               order_by:
                 - timestamp desc
-            description: The plan the user is currently on
+            description: All products that the user have expressed interest in
         - entity_var:
-            name: viewed_supersonic_content
+            name: cd_content_viewed
             from: inputs/rsIdentifies
-            select: sum(viewed_supersonic_content::real)
-            description: Number of supersonic content viewed
+            select: sum(cd_content_viewed::real)
+            description: Number of CD content viewed
         - entity_var:
-            name: remote_user_score
+            name: checking_content_viewed
             from: inputs/rsIdentifies
-            select: first_value(remote_user_score ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
-            description: Confidence score if the user is remote user
+            select: sum(cd_content_viewed::real)
+            description: Number of Checking content viewed
         - entity_var:
-            name: mwu_user
+            name: savings_content_viewed
             from: inputs/rsIdentifies
-            select: first_value(mwu_user ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
-            description: Is the user active with MWU
+            select: sum(cd_content_viewed::real)
+            description: Number of Savings and MMA content viewed
         - entity_var:
             name: total_sessions_to_date
             from: models/rsTracksUnionPages
@@ -119,13 +113,13 @@ models:
               - max_timestamp_pages
               - user_role
       features:
-        - product_used
-        - viewed_supersonic_content
-        - remote_user_score
-        - mwu_user
+        - interested_products
+        - cd_content_viewed
+        - checking_content_viewed
+        - savings_content_viewed
+        - recent_user_email
         - first_name
         - last_name
-        - recent_user_email
         - total_sessions_to_date
         - days_since_account_creation
         - days_since_last_seen

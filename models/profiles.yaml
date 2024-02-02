@@ -29,25 +29,25 @@ models:
           value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
       vars:
         - entity_var:
-            name: interested_products
+            name: user_role
             from: inputs/rsIdentifies
-            select: array_agg(distinct interested_products)
-            description: All products that the user have expressed interest in
+            select: array_agg(distinct user_role)
+            description: What type of user is this user
         - entity_var:
-            name: cd_content_viewed
+            name: estimates_completed
             from: inputs/rsIdentifies
-            select: sum(cd_content_viewed::real)
-            description: Number of CD content viewed
+            select: sum(number_of_estimates_completed::real)
+            description: Total number of estimates submitted online
         - entity_var:
-            name: checking_content_viewed
+            name: job_completed
             from: inputs/rsIdentifies
             select: sum(checking_content_viewed::real)
-            description: Number of Checking content viewed
+            description: Number of jobs completed
         - entity_var:
-            name: savings_content_viewed
+            name: average_survey_score
             from: inputs/rsIdentifies
-            select: sum(savings_content_viewed::real)
-            description: Number of Savings and MMA content viewed
+            select: avg(average_survey_score::real)
+            description: Average survey score from shippers about this carrier
         - entity_var:
             name: total_sessions_to_date
             from: models/rsTracksUnionPages
@@ -110,10 +110,10 @@ models:
               - max_timestamp_pages
               - user_role
       features:
-        - interested_products
-        - cd_content_viewed
-        - checking_content_viewed
-        - savings_content_viewed
+        - user_role
+        - estimates_completed
+        - jobs_completed
+        - average_survey_score
         - recent_user_email
         - first_name
         - last_name

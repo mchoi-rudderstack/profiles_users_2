@@ -39,9 +39,9 @@ models:
             select: sum(number_of_estimates_completed::real)
             description: Total number of estimates submitted online
         - entity_var:
-            name: job_completed
+            name: jobs_completed
             from: inputs/rsIdentifies
-            select: sum(checking_content_viewed::real)
+            select: sum(jobs_completed::real)
             description: Number of jobs completed
         - entity_var:
             name: average_survey_score

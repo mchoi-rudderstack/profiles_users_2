@@ -50,6 +50,11 @@ models:
             select: sum(orders_submitted::real)
             description: Number of orders submitted
         - entity_var:
+            name: most_ordered_brands
+            from: inputs/rsIdentifies
+            select: array_agg(distinct most_popular_brand)
+            description: Brands most ordered by the user
+        - entity_var:
             name: previous_order_transaction
             from: inputs/rsIdentifies
             select: first_value(previous_order_transaction ignore nulls)
@@ -138,6 +143,7 @@ models:
         - country
         - bees_points
         - orders_submitted
+        - most_ordered_brands
         - previous_order_transaction
         - ltv
         - churn_score

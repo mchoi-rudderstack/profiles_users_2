@@ -29,25 +29,50 @@ models:
           value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
       vars:
         - entity_var:
-            name: user_role
+            name: country
             from: inputs/rsIdentifies
-            select: array_agg(distinct user_role)
-            description: What type of user is this user
+            select: first_value(country ignore nulls)
+            window:
+              order_by:
+                - timestamp desc
+            description: The country of the user
         - entity_var:
-            name: estimates_completed
+            name: bees_points
             from: inputs/rsIdentifies
-            select: sum(number_of_estimates_completed::real)
-            description: Total number of estimates submitted online
+            select: first_value(bees_points ignore nulls)
+            window:
+              order_by:
+                - timestamp desc
+            description: The number of points available to redeem
         - entity_var:
-            name: jobs_completed
+            name: orders_submitted
             from: inputs/rsIdentifies
-            select: sum(jobs_completed::real)
-            description: Number of jobs completed
+            select: sum(orders_submitted::real)
+            description: Number of orders submitted
         - entity_var:
-            name: average_survey_score
+            name: previous_order_transaction
             from: inputs/rsIdentifies
-            select: avg(average_survey_score::real)
-            description: Average survey score from shippers about this carrier
+            select: first_value(previous_order_transaction ignore nulls)
+            window:
+              order_by:
+                - timestamp desc
+            description: The value of the previous submitted order
+        - entity_var:
+            name: ltv
+            from: inputs/rsIdentifies
+            select: first_value(ltv ignore nulls)
+            window:
+              order_by:
+                - timestamp desc
+            description: The LTV of the user
+        - entity_var:
+            name: churn_score
+            from: inputs/rsIdentifies
+            select: first_value(churn_score ignore nulls)
+            window:
+              order_by:
+                - timestamp desc
+            description: The churn score of the user
         - entity_var:
             name: total_sessions_to_date
             from: models/rsTracksUnionPages
@@ -110,10 +135,12 @@ models:
               - max_timestamp_pages
               - user_role
       features:
-        - user_role
-        - estimates_completed
-        - jobs_completed
-        - average_survey_score
+        - country
+        - bees_points
+        - orders_submitted
+        - previous_order_transaction
+        - ltv
+        - churn_score
         - recent_user_email
         - first_name
         - last_name

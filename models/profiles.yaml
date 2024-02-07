@@ -29,31 +29,15 @@ models:
           value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
       vars:
         - entity_var:
-            name: country
+            name: brands_used
             from: inputs/rsIdentifies
-            select: first_value(country ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
-            description: The country of the user
-        - entity_var:
-            name: bees_points
-            from: inputs/rsIdentifies
-            select: first_value(bees_points ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
-            description: The number of points available to redeem
+            select: array_agg(distinct brands_used)
+            description: Website used by the user
         - entity_var:
             name: orders_submitted
             from: inputs/rsIdentifies
             select: sum(orders_submitted::real)
             description: Number of orders submitted
-        - entity_var:
-            name: most_ordered_brands
-            from: inputs/rsIdentifies
-            select: array_agg(distinct most_popular_brand)
-            description: Brands most ordered by the user
         - entity_var:
             name: previous_order_transaction
             from: inputs/rsIdentifies
@@ -78,6 +62,14 @@ models:
               order_by:
                 - timestamp desc
             description: The churn score of the user
+        - entity_var:
+            name: active_support_tickets
+            from: inputs/rsIdentifies
+            select: first_value(number ignore nulls)
+            window:
+              order_by:
+                - timestamp desc
+            description: The number of unresolved tickets opened by the user
         - entity_var:
             name: total_sessions_to_date
             from: models/rsTracksUnionPages
@@ -140,13 +132,12 @@ models:
               - max_timestamp_pages
               - user_role
       features:
-        - country
-        - bees_points
+        - brands_used
         - orders_submitted
-        - most_ordered_brands
         - previous_order_transaction
         - ltv
         - churn_score
+        - active_support_tickets
         - recent_user_email
         - first_name
         - last_name

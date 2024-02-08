@@ -29,11 +29,6 @@ models:
           value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
       vars:
         - entity_var:
-            name: brands_used
-            from: inputs/rsIdentifies
-            select: array_agg(distinct brands_used)
-            description: Website used by the user
-        - entity_var:
             name: orders_submitted
             from: inputs/rsIdentifies
             select: sum(orders_submitted::real)
@@ -132,7 +127,6 @@ models:
               - max_timestamp_pages
               - user_role
       features:
-        - brands_used
         - orders_submitted
         - previous_order_transaction
         - ltv
@@ -144,7 +138,4 @@ models:
         - total_sessions_to_date
         - days_since_account_creation
         - days_since_last_seen
-        - max_timestamp_tracks
-        - max_timestamp_pages
-        - max_timestamp_bw_tracks_pages
               

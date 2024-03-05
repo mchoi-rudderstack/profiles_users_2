@@ -8,134 +8,67 @@ models:
         - from: inputs/rsIdentifies
         - from: inputs/rsTracks
         - from: inputs/rsPages
-        - from: inputs/rsOrderCreated
-        - from: inputs/rsOrderCancelled
-        - from: inputs/rsCartUpdate
   # Remove the section below, if you don't want to generate a feature table
   - name: users
     model_type: feature_table_model
     model_spec:
       validity_time: 24h # 1 day
       entity_key: user
-      macros:
-        - name: macro_datediff
-          inputs:
-            - column
-          value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) {% else %} datediff(day, date({{column}}), GETDATE()) {% endif %}"
-        - name: macro_datediff_n
-          inputs:
-            - column
-            - number_of_days
-          value: "{% if !(end_time|isnil) %} datediff(day, date({{column}}), date('{{end_time.Format(\"2006-01-02 15:04:05\")}}')) <={{number_of_days}} {% else %} datediff(day, date({{column}}), GETDATE()) <= {{number_of_days}} {% endif %}"
-      vars:
-        - entity_var:
-            name: orders_submitted
-            from: inputs/rsIdentifies
-            select: sum(orders_submitted::real)
-            description: Number of orders submitted
-        - entity_var:
-            name: previous_order_transaction
-            from: inputs/rsIdentifies
-            select: first_value(previous_order_transaction ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
-            description: The value of the previous submitted order
-        - entity_var:
-            name: ltv
-            from: inputs/rsIdentifies
-            select: first_value(ltv ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
-            description: The LTV of the user
-        - entity_var:
-            name: churn_score
-            from: inputs/rsIdentifies
-            select: first_value(churn_score ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
-            description: The churn score of the user
-        - entity_var:
-            name: active_support_tickets
-            from: inputs/rsIdentifies
-            select: first_value(number ignore nulls)
-            window:
-              order_by:
-                - timestamp desc
-            description: The number of unresolved tickets opened by the user
-        - entity_var:
-            name: total_sessions_to_date
-            from: models/rsTracksUnionPages
-            select: count(distinct context_session_id)
-            where: context_session_id is not null
-            description: Total individual sessions created till date.
-        #days since last seen
-        - entity_var:
-            name: days_since_last_seen
-            select: "{{macro_datediff('max_timestamp_bw_tracks_pages')}}"
-            dependencies:
-              - max_timestamp_bw_tracks_pages
-            description: Days since user last logged in
-        - entity_var:
-            name: days_since_account_creation
-            select: "{{macro_datediff('min(timestamp)')}}"
-            from: inputs/rsIdentifies
-            description: Number of days since loyaltt account was created
-        - entity_var:
-            name: first_name
-            from: inputs/rsIdentifies
-            select: first_value(first_name)
-            window:
-              order_by:
-                - timestamp desc
-            where: first_name is not null and first_name!=''
-            description: First name of the customer
-        - entity_var:
-            name: last_name
-            from: inputs/rsIdentifies
-            select: first_value(last_name)
-            window:
-              order_by:
-                - timestamp desc
-            where: last_name is not null and last_name!=''
-            description: Last name of the customer
-        - entity_var:
-            name: recent_user_email
-            from: inputs/rsIdentifies
-            select: first_value(email)
-            window:
-              order_by:
-                - timestamp desc
-            where: email is not null and email!=''
-            description: Email associated to the order
-        - entity_var:
-            name: max_timestamp_tracks
-            select: max(timestamp)
-            from: inputs/rsTracks
-        - entity_var:
-            name: max_timestamp_pages
-            select: max(timestamp)
-            from: inputs/rsPages
-            description: The total value of products that are part of the last transaction.
-        - entity_var:
-            name: max_timestamp_bw_tracks_pages
-            select: CASE WHEN max_timestamp_tracks>=max_timestamp_pages THEN max_timestamp_tracks ELSE max_timestamp_pages END
-            dependencies:
-              - max_timestamp_tracks
-              - max_timestamp_pages
-              - user_role
       features:
-        - orders_submitted
-        - previous_order_transaction
-        - ltv
-        - churn_score
-        - active_support_tickets
-        - recent_user_email
-        - first_name
-        - last_name
+        - payments_received
+        - payments_executed
+        - total_withdrawn_amount
+        - total_capital_approved
+        - propensity_to_apply_for_loan
+        - propensity_to_churn
+        - most_recent_email
         - total_sessions_to_date
-        - days_since_account_creation
-        - days_since_last_seen
-              
+var_groups:
+  - name: user_vars
+    entity_key: user
+    vars:
+      - entity_var:
+          name: payments_received
+          from: inputs/rsIdentifies
+          select: uniform(1, 100, random())
+          description: Number of payments received
+      - entity_var:
+          name: payments_executed
+          from: inputs/rsIdentifies
+          select: uniform(1, 100, random())
+          description: Number of payments sent
+      - entity_var:
+          name: total_withdrawn_amount
+          from: inputs/rsIdentifies
+          select: uniform(1, 1000, random())
+          description: Amount withdrawn
+      - entity_var:
+          name: total_capital_approved
+          from: inputs/rsIdentifies
+          select: uniform(0, 10000, random())
+          description: Capital loan amount approved
+      - entity_var:
+          name: propensity_to_apply_for_loan
+          from: inputs/rsIdentifies
+          select: right(random(), 2)/100
+          description: Likelihood of the user to apply for a loan
+      - entity_var:
+          name: propensity_to_churn
+          from: inputs/rsIdentifies
+          select: right(random(), 2)/100
+          description: Likelihood of the user to churn
+      - entity_var:
+          name: total_sessions_to_date
+          from: models/rsTracksUnionPages
+          select: count(distinct context_session_id)
+          where: context_session_id is not null
+          description: Total individual sessions created till date.
+      - entity_var:
+          name: most_recent_email
+          from: inputs/rsIdentifies
+          select: first_value(email)
+          window:
+            order_by:
+              - timestamp desc
+          where: email is not null and email!=''
+          description: Email associated to the user

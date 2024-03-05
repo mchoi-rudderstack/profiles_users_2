@@ -15,6 +15,7 @@ models:
       validity_time: 24h # 1 day
       entity_key: user
       features:
+        - user_type 
         - payments_received
         - payments_executed
         - total_withdrawn_amount
@@ -27,6 +28,11 @@ var_groups:
   - name: user_vars
     entity_key: user
     vars:
+      - entity_var:
+          name: user_type
+          from: inputs/rsIdentifies
+          select: max(array_construct('freelancer or service provider','online seller','marketplace or enterprise', 'small or medium sized business')[ABS(MOD(Random(),4))]::text)
+          description: What type of account did the user select
       - entity_var:
           name: payments_received
           from: inputs/rsIdentifies

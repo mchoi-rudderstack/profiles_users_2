@@ -1,7 +1,7 @@
 # Project name
 name: users
 # Project's yaml schema version
-schema_version: 40
+schema_version: 53
 # WH Connection Profile to use.
 connection: adhoc_wh
 # Whether to allow inputs having no timestamps,
@@ -20,10 +20,8 @@ entities:
       - user_id
       - anonymous_id
       - email
-      - cart_token
 id_types:
   - name: user_id
-  - name: cart_token
   - name: session_id
   - name: anonymous_id
     filters:
@@ -39,5 +37,3 @@ id_types:
         regex: ".+@.+"
       - type: exclude
         value: "test@company.com"
-      - type: exclude
-        value: ""

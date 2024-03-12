@@ -16,14 +16,16 @@ models:
       entity_key: user
       features:
         - business_type 
-        - payments_received
-        - payments_executed
-        - total_withdrawn_amount
-        - total_capital_approved
-        - propensity_to_apply_for_loan
+        - pricing_package
+        - completed_onboarding
+        - paperwork_filed
+        - state_approved
+        - state_of_formation
         - propensity_to_churn
         - most_recent_email
         - total_sessions_to_date
+        - firstname
+        - lastname
 var_groups:
   - name: user_vars
     entity_key: user

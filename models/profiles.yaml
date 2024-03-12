@@ -15,7 +15,7 @@ models:
       validity_time: 24h # 1 day
       entity_key: user
       features:
-        - user_type 
+        - business_type 
         - payments_received
         - payments_executed
         - total_withdrawn_amount
@@ -29,34 +29,34 @@ var_groups:
     entity_key: user
     vars:
       - entity_var:
-          name: user_type
+          name: business_type
           from: inputs/rsIdentifies
-          select: max(array_construct('freelancer or service provider','online seller','marketplace or enterprise', 'small or medium sized business')[ABS(MOD(Random(),4))]::text)
+          select: max(distinct array_construct('llc','s corporation','c corporation', 'nonprofit')[ABS(MOD(Random(),4))]::text)
           description: What type of account did the user select
       - entity_var:
-          name: payments_received
+          name: pricing_package
           from: inputs/rsIdentifies
-          select: uniform(1, 100, random())
-          description: Number of payments received
+          select: max(array_construct('basic','standard','premium')[ABS(MOD(Random(),3))]::text)
+          description: What type of account did the user select
       - entity_var:
-          name: payments_executed
+          name: completed_onboarding
           from: inputs/rsIdentifies
-          select: uniform(1, 100, random())
-          description: Number of payments sent
+          select: max(array_construct('true','false')[ABS(MOD(Random(),2))]::text)
+          description: What type of account did the user select
       - entity_var:
-          name: total_withdrawn_amount
+          name: paperwork_filed
           from: inputs/rsIdentifies
-          select: uniform(1, 1000, random())
-          description: Amount withdrawn
+          select: case when {{user.Var(\"completed_onboarding\")}} = 'true' then array_construct('true','false')[ABS(MOD(Random(),2))]::text else 'false'
+          description: What type of account did the user select
       - entity_var:
-          name: total_capital_approved
+          name: state_approved
           from: inputs/rsIdentifies
-          select: uniform(0, 10000, random())
-          description: Capital loan amount approved
+          select: max(array_construct('true','false')[ABS(MOD(Random(),2))]::text)
+          description: What type of account did the user select
       - entity_var:
-          name: propensity_to_apply_for_loan
+          name: state_of_formation
           from: inputs/rsIdentifies
-          select: right(random(), 2)/100
+          select: max(array_construct('AZ','CA','DE','FL','NY')[ABS(MOD(Random(),5))]::text)
           description: Likelihood of the user to apply for a loan
       - entity_var:
           name: propensity_to_churn
@@ -72,9 +72,25 @@ var_groups:
       - entity_var:
           name: most_recent_email
           from: inputs/rsIdentifies
-          select: first_value(email)
+          select: first_value(email ignore nulls)
           window:
             order_by:
               - timestamp desc
           where: email is not null and email!=''
           description: Email associated to the user
+      - entity_var:
+          name: firstname
+          from: inputs/rsIdentifies
+          select: first_value(first_name ignore nulls)
+          window:
+            order_by:
+              - timestamp desc
+          description: First name associated to the user
+      - entity_var:
+          name: lastname
+          from: inputs/rsIdentifies
+          select: first_value(last_name ignore nulls)
+          window:
+            order_by:
+              - timestamp desc
+          description: Last name associated to the user

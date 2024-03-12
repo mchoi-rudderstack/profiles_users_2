@@ -22,6 +22,7 @@ models:
         - state_approved
         - state_of_formation
         - propensity_to_churn
+        - num_of_open_support_tickets
         - most_recent_email
         - total_sessions_to_date
         - firstname

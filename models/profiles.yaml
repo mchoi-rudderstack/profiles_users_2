@@ -24,6 +24,7 @@ models:
         - propensity_to_churn
         - num_of_open_support_tickets
         - most_recent_email
+        - attribution_source
         - total_sessions_to_date
         - firstname
         - lastname
@@ -85,6 +86,11 @@ var_groups:
           window:
             order_by:
               - timestamp desc
+      - entity_var:
+          name: attribution_source
+          from: inputs/rsIdentifies
+          select: max(array_construct('Google','Facebook','Reddit','Quora','Wikipedia')[ABS(MOD(Random(),5))]::text)
+          description: Last touch attribution for the user
       - entity_var:
           name: most_recent_email
           from: inputs/rsIdentifies

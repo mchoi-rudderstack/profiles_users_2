@@ -75,6 +75,12 @@ var_groups:
           where: context_session_id is not null
           description: Total individual sessions created till date.
       - entity_var:
+          name: num_of_open_support_tickets
+          select: first_value(open_support_tickets ignore nulls)
+          window:
+            order_by:
+              - timestamp desc
+      - entity_var:
           name: most_recent_email
           from: inputs/rsIdentifies
           select: first_value(email ignore nulls)

@@ -42,18 +42,21 @@ var_groups:
           description: What type of package did the user select
       - entity_var:
           name: completed_onboarding
+          from: inputs/rsIdentifies
           select: first_value(col_completed_onboarding ignore nulls)
           window:
             order_by:
               - timestamp desc
       - entity_var:
           name: paperwork_filed
+          from: inputs/rsIdentifies
           select: first_value(col_paperwork_filed ignore nulls)
           window:
             order_by:
               - timestamp desc
       - entity_var:
           name: state_approved
+          from: inputs/rsIdentifies
           select: first_value(col_state_approved ignore nulls)
           window:
             order_by:
@@ -76,6 +79,7 @@ var_groups:
           description: Total individual sessions created till date.
       - entity_var:
           name: num_of_open_support_tickets
+          from: inputs/rsIdentifies
           select: first_value(open_support_tickets ignore nulls)
           window:
             order_by:

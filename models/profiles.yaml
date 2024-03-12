@@ -34,27 +34,30 @@ var_groups:
           name: business_type
           from: inputs/rsIdentifies
           select: max(distinct array_construct('llc','s corporation','c corporation', 'nonprofit')[ABS(MOD(Random(),4))]::text)
-          description: What type of account did the user select
+          description: What type of business is the user incorporating
       - entity_var:
           name: pricing_package
           from: inputs/rsIdentifies
           select: max(array_construct('basic','standard','premium')[ABS(MOD(Random(),3))]::text)
-          description: What type of account did the user select
+          description: What type of package did the user select
       - entity_var:
           name: completed_onboarding
-          from: inputs/rsIdentifies
-          select: max(array_construct('true','false')[ABS(MOD(Random(),2))]::text)
-          description: What type of account did the user select
+          select: first_value(col_completed_onboarding ignore nulls)
+          window:
+            order_by:
+              - timestamp desc
       - entity_var:
           name: paperwork_filed
-          from: inputs/rsIdentifies
-          select: case when {{user.Var(\"completed_onboarding\")}} = 'true' then array_construct('true','false')[ABS(MOD(Random(),2))]::text else 'false'
-          description: What type of account did the user select
+          select: first_value(col_paperwork_filed ignore nulls)
+          window:
+            order_by:
+              - timestamp desc
       - entity_var:
           name: state_approved
-          from: inputs/rsIdentifies
-          select: max(array_construct('true','false')[ABS(MOD(Random(),2))]::text)
-          description: What type of account did the user select
+          select: first_value(col_state_approved ignore nulls)
+          window:
+            order_by:
+              - timestamp desc
       - entity_var:
           name: state_of_formation
           from: inputs/rsIdentifies

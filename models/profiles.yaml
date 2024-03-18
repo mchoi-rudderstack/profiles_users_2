@@ -38,7 +38,7 @@ var_groups:
               - timestamp desc
           description: What type of product is the user using
       - entity_var:
-          name: pricing_package
+          name: total_supersonic_content_viewed
           from: inputs/rsIdentifies
           select: sum(supersonic_content_viewed::real)
           description: Number of supersonic content viewed by this user

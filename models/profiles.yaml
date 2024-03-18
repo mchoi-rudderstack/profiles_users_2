@@ -74,7 +74,7 @@ var_groups:
             order_by:
               - timestamp desc
       - entity_var:
-          name: attribution_source
+          name: attribution_sources
           from: inputs/rsIdentifies
           select: array_agg(array_construct('Google','Facebook','Reddit','Quora','Wikipedia')[ABS(MOD(Random(),5))]::text)
           description: All attribution sources in chronological order

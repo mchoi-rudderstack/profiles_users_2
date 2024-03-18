@@ -15,17 +15,14 @@ models:
       validity_time: 24h # 1 day
       entity_key: user
       features:
-        - business_type 
-        - pricing_package
-        - completed_onboarding
-        - paperwork_filed
-        - state_approved
-        - state_of_formation
-        - propensity_to_churn
+        - product_used 
+        - total_supersonic_content_viewed
+        - remote_user_score
+        - mwu_user
         - num_of_open_support_tickets
-        - most_recent_email
-        - attribution_source
         - total_sessions_to_date
+        - attribution_sources
+        - most_recent_email
         - firstname
         - lastname
 var_groups:
@@ -33,41 +30,32 @@ var_groups:
     entity_key: user
     vars:
       - entity_var:
-          name: business_type
+          name: product_used
           from: inputs/rsIdentifies
-          select: max(distinct array_construct('llc','s corporation','c corporation', 'nonprofit')[ABS(MOD(Random(),4))]::text)
-          description: What type of business is the user incorporating
+          select: first_value(product_used ignore nulls)
+          window:
+            order_by:
+              - timestamp desc
+          description: What type of product is the user using
       - entity_var:
           name: pricing_package
           from: inputs/rsIdentifies
-          select: max(array_construct('basic','standard','premium')[ABS(MOD(Random(),3))]::text)
-          description: What type of package did the user select
+          select: sum(supersonic_content_viewed::real)
+          description: Number of supersonic content viewed by this user
       - entity_var:
-          name: completed_onboarding
+          name: remote_user_score
           from: inputs/rsIdentifies
-          select: first_value(col_completed_onboarding ignore nulls)
+          select: first_value(remote_user_score ignore nulls)
           window:
             order_by:
               - timestamp desc
       - entity_var:
-          name: paperwork_filed
+          name: mwu_user
           from: inputs/rsIdentifies
-          select: first_value(col_paperwork_filed ignore nulls)
+          select: first_value(mwu_user ignore nulls)
           window:
             order_by:
               - timestamp desc
-      - entity_var:
-          name: state_approved
-          from: inputs/rsIdentifies
-          select: first_value(col_state_approved ignore nulls)
-          window:
-            order_by:
-              - timestamp desc
-      - entity_var:
-          name: state_of_formation
-          from: inputs/rsIdentifies
-          select: max(array_construct('AZ','CA','DE','FL','NY')[ABS(MOD(Random(),5))]::text)
-          description: Likelihood of the user to apply for a loan
       - entity_var:
           name: propensity_to_churn
           from: inputs/rsIdentifies
@@ -76,8 +64,7 @@ var_groups:
       - entity_var:
           name: total_sessions_to_date
           from: models/rsTracksUnionPages
-          select: count(distinct context_session_id)
-          where: context_session_id is not null
+          select: uniform(1, 30, random())
           description: Total individual sessions created till date.
       - entity_var:
           name: num_of_open_support_tickets
@@ -89,8 +76,8 @@ var_groups:
       - entity_var:
           name: attribution_source
           from: inputs/rsIdentifies
-          select: max(array_construct('Google','Facebook','Reddit','Quora','Wikipedia')[ABS(MOD(Random(),5))]::text)
-          description: Last touch attribution for the user
+          select: array_agg(array_construct('Google','Facebook','Reddit','Quora','Wikipedia')[ABS(MOD(Random(),5))]::text)
+          description: All attribution sources in chronological order
       - entity_var:
           name: most_recent_email
           from: inputs/rsIdentifies

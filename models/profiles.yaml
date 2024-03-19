@@ -76,7 +76,7 @@ var_groups:
       - entity_var:
           name: attribution_sources
           from: inputs/rsIdentifies
-          select: array_agg(array_construct('Google','Facebook','Reddit','Quora','Wikipedia')[ABS(MOD(Random(),5))]::text)
+          select: array_agg(array_construct('Google','Facebook','Reddit','ironSource','Wikipedia')[ABS(MOD(Random(),5))]::text)
           description: All attribution sources in chronological order
       - entity_var:
           name: most_recent_email

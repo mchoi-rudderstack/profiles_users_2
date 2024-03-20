@@ -15,7 +15,7 @@ models:
       validity_time: 24h # 1 day
       entity_key: user
       features:
-        - product_used 
+        - subscription_type 
         - num_devices_purchased
         - propensity_to_purchase_subscription
         - ltv

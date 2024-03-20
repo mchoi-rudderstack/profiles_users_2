@@ -16,9 +16,9 @@ models:
       entity_key: user
       features:
         - product_used 
-        - total_supersonic_content_viewed
-        - remote_user_score
-        - mwu_user
+        - num_devices_purchased
+        - propensity_to_purchase_subscription
+        - ltv
         - num_of_open_support_tickets
         - total_sessions_to_date
         - attribution_sources
@@ -30,29 +30,29 @@ var_groups:
     entity_key: user
     vars:
       - entity_var:
-          name: product_used
+          name: subscription_type
           from: inputs/rsIdentifies
           select: first_value(product_used ignore nulls)
           window:
             order_by:
               - timestamp desc
-          description: What type of product is the user using
+          description: What type of subscription is the user on
       - entity_var:
-          name: total_supersonic_content_viewed
+          name: num_devices_purchased
           from: inputs/rsIdentifies
-          select: sum(supersonic_content_viewed::real)
-          description: Number of supersonic content viewed by this user
+          select: sum(devices_purchased::real)
+          description: Number of devices purchased
       - entity_var:
-          name: remote_user_score
+          name: propensity_to_purchase_subscription
           from: inputs/rsIdentifies
           select: first_value(remote_user_score ignore nulls)
           window:
             order_by:
               - timestamp desc
       - entity_var:
-          name: mwu_user
+          name: ltv
           from: inputs/rsIdentifies
-          select: first_value(mwu_user ignore nulls)
+          select: first_value(ltv ignore nulls)
           window:
             order_by:
               - timestamp desc
@@ -76,7 +76,7 @@ var_groups:
       - entity_var:
           name: attribution_sources
           from: inputs/rsIdentifies
-          select: array_agg(array_construct('Google','Facebook','Reddit','ironSource','Sensor Tower')[ABS(MOD(Random(),5))]::text)
+          select: array_agg(array_construct('Google','Facebook','Reddit', 'Bing', 'YouTube')[ABS(MOD(Random(),5))]::text)
           description: All attribution sources in chronological order
       - entity_var:
           name: most_recent_email
